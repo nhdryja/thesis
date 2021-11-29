@@ -1,0 +1,143 @@
+#now will start with basic data metrics for population
+#calculating means for the different variables
+popmean <- mean(final5$total.pop)
+foodinsecmean2019<- mean(final5$food.insecurity.rate2019)
+foodinsecmean2021<- mean(final5$food.insecurity.rate2021)
+childpopmean <- mean(final5$childpop)
+childfoodinsecmean2019<- mean(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecmean2021<- mean(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+casemean <- mean(final5$covidcases2020, na.rm=TRUE)
+deathmean <- mean(final5$coviddeath2020, na.rm=TRUE)
+malemean<- mean(final5$male, na.rm=TRUE)
+femalemean<- mean(final5$female, na.rm=TRUE)
+under18mean <- mean(final5$under18, na.rm=TRUE)
+adultmean <- mean(final5$adult, na.rm=TRUE)
+seniormean <- mean(final5$senior, na.rm=TRUE)
+nohsmean<- mean(final5$nohs, na.rm=TRUE)
+hsmean<- mean(final5$hs, na.rm=TRUE)
+bachelorsmean<- mean(final5$bachelors, na.rm=TRUE)
+advmean<- mean(final5$advdegree, na.rm=TRUE)
+unem2019mean<- mean(final5$unemp2019, na.rm=TRUE)
+unem2020mean<- mean(final5$unemp2020, na.rm=TRUE)
+infectionmean <-mean(final5$infection, na.rm=TRUE)
+mortalitymean <-mean(final5$mortality, na.rm=TRUE)
+severitymean <-mean(final5$severity, na.rm=TRUE)
+
+
+#calculating standard deviations for the different variables
+popsd <- sd(final5$total.pop)
+foodinsecsd2019<- sd(final5$food.insecurity.rate2019)
+foodinsecsd2021<- sd(final5$food.insecurity.rate2021)
+childpopsd<- sd(final5$childpop)
+childfoodinsecsd2019<- sd(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecsd2021<- sd(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+casesd <- sd(final5$covidcases2020, na.rm=TRUE)
+deathsd <- sd(final5$coviddeath2020, na.rm=TRUE)
+malesd<- sd(final5$male, na.rm=TRUE)
+femalesd<- sd(final5$female, na.rm=TRUE)
+under18sd <- sd(final5$under18, na.rm=TRUE)
+adultsd <- sd(final5$adult, na.rm=TRUE)
+seniorsd <- sd(final5$senior, na.rm=TRUE)
+nohssd<- sd(final5$nohs, na.rm=TRUE)
+hssd<-sd(final5$hs, na.rm=TRUE)
+bachelorssd<- sd(final5$bachelors, na.rm=TRUE)
+advsd<- sd(final5$advdegree, na.rm=TRUE)
+unem2019sd<- sd(final5$unemp2019, na.rm=TRUE)
+unem2020sd<- sd(final5$unemp2020, na.rm=TRUE)
+infectionsd <-sd(final5$infection, na.rm=TRUE)
+mortalitysd <-sd(final5$mortality, na.rm=TRUE)
+severitysd <-sd(final5$severity, na.rm=TRUE)
+
+#calculating medians
+popmedian <- median(final5$total.pop)
+foodinsecmedian2019<- median(final5$food.insecurity.rate2019)
+foodinsecmedian2021<- median(final5$food.insecurity.rate2021)
+childpopmedian <- median(final5$childpop)
+childfoodinsecmedian2019<- median(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecmedian2021<- median(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+casemedian <- median(final5$covidcases2020, na.rm=TRUE)
+deathmedian <- median(final5$coviddeath2020, na.rm=TRUE)
+malemedian<- median(final5$male, na.rm=TRUE)
+femalemedian<- median(final5$female, na.rm=TRUE)
+under18median <- median(final5$under18, na.rm=TRUE)
+adultmedian <- median(final5$adult, na.rm=TRUE)
+seniormedian<- median(final5$senior, na.rm=TRUE)
+nohsmedian<- median(final5$nohs, na.rm=TRUE)
+hsmedian<- median(final5$hs, na.rm=TRUE)
+bachelorsmedian<- median(final5$bachelors, na.rm=TRUE)
+advmedian<- median(final5$advdegree, na.rm=TRUE)
+unem2019median<- median(final5$unemp2019, na.rm=TRUE)
+unem2020median<- median(final5$unemp2020, na.rm=TRUE)
+infectionmedian <-median(final5$infection, na.rm=TRUE)
+mortalitymedian <-median(final5$mortality, na.rm=TRUE)
+severitymedian <-median(final5$severity, na.rm=TRUE)
+
+#calculate the inter qurtile ranges
+popiqr <- IQR(final5$total.pop)
+foodinsecIQR2019<- IQR(final5$food.insecurity.rate2019)
+foodinsecIQR2021<- IQR(final5$food.insecurity.rate2021)
+childpopIQR <- IQR(final5$childpop)
+childpoprateIQR <- IQR(final5$childrate)
+childfoodinsecIQR2019<- IQR(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecIQR2021<- IQR(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+caseIQR <- IQR(final5$covidcases2020, na.rm=TRUE)
+deathIQR <- IQR(final5$coviddeath2020, na.rm=TRUE)
+maleIQR<- IQR(final5$male, na.rm=TRUE)
+femaleIQR<- IQR(final5$female, na.rm=TRUE)
+under18IQR <- IQR(final5$under18, na.rm=TRUE)
+adultIQR <- IQR(final5$adult, na.rm=TRUE)
+seniorIQR <- IQR(final5$senior, na.rm=TRUE)
+nohsIQR<- IQR(final5$nohs, na.rm=TRUE)
+hsIQR<- IQR(final5$hs, na.rm=TRUE)
+bachelorsIQR<- IQR(final5$bachelors, na.rm=TRUE)
+advIQR<- IQR(final5$advdegree, na.rm=TRUE)
+unem2019IQR<- IQR(final5$unemp2019, na.rm=TRUE)
+unem2020IQR<- IQR(final5$unemp2020, na.rm=TRUE)
+infectionIQR <-IQR(final5$infection, na.rm=TRUE)
+mortalityIQR <-IQR(final5$mortality, na.rm=TRUE)
+severityIQR <-IQR(final5$severity, na.rm=TRUE)
+
+
+#create a table with the univariate characteristics for demographic variables 
+demographicuni<- matrix(c(popmean, childpopmean, malemean,femalemean,
+        under18mean , adultmean , seniormean ,nohsmean,hsmean, bachelorsmean, advmean,
+        unem2019mean,unem2020mean,
+        popsd,childpopsd, malesd,femalesd,under18sd,adultsd, 
+        seniorsd,nohssd, hssd, bachelorssd, advsd,unem2019sd,unem2020sd,
+        popmedian,  childpopmedian, malemedian, femalemedian,
+        under18median,adultmedian,seniormedian,nohsmedian,
+        hsmedian,bachelorsmedian, advmedian, unem2019median, unem2020median,
+        popiqr,childpopIQR, maleIQR,femaleIQR,under18IQR,adultIQR, 
+        seniorIQR,nohsIQR, hsIQR, bachelorsIQR, advIQR,unem2019IQR,unem2020IQR),
+        ncol= 13, byrow= TRUE)
+colnames(demographicuni) <- c('Population','Under 18 Population','Male Percent', 
+        'Female Percent ', 'Under 18 Percent', '18-64 Percent', '65+ Percent', 
+        'Did not graduate high school', 'High School graduate', 'Bachelors degree', 'Advanced degree',
+        '2019 unemployment rate', '2020 unemployment rate')
+rownames(demographicuni) <- c('Mean','StandardDeviation', 'Median','IQR')
+demographicuni <- as.table(demographicuni)
+
+
+write.table(demographicuni, file = "demographicuni.txt", sep = ",", quote = FALSE, row.names=T )
+
+
+#creating univariate table for covid and food insecurity variables
+foodcoviduni<- matrix(c(foodinsecmean2019,foodinsecmean2021,childfoodinsecmean2019, childfoodinsecmean2021, 
+                         casemean,deathmean, infectionmean, mortalitymean, severitymean, 
+                        foodinsecsd2019, foodinsecsd2021, childfoodinsecsd2019, childfoodinsecsd2021,
+                        casesd, deathsd, infectionsd, mortalitysd, severitysd,
+                         foodinsecmedian2019, foodinsecmedian2021, childfoodinsecmedian2019, childfoodinsecmedian2021,
+                        casemedian, deathmedian, infectionmedian, mortalitymedian, severitymedian, 
+                        foodinsecIQR2019, foodinsecIQR2021, childfoodinsecIQR2019, childfoodinsecIQR2021,
+                        caseIQR, deathIQR, infectionIQR, mortalityIQR, severityIQR),
+                        ncol= 9, byrow= TRUE)
+colnames(foodcoviduni) <- c('Food insecurity 2019','Food insecurity 2021','Child food insecurity 2019', 
+                              'Child food insecurity 2021 ', 'Covid-19 cases', 'Covid-19 deaths', 
+                              'Covid-19 infection rate', 'Covid-19 mortality rate', 
+                              'Covid-19 severity rate')
+rownames(foodcoviduni) <- c('Mean',,'Standard Deviation', 'Median','IQR')
+foodcoviduni <- as.table(foodcoviduni)
+
+
+write.table(foodcoviduni, file = "foodcoviduni.txt", sep = ",", quote = FALSE, row.names=T )
+
