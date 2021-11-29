@@ -1,0 +1,94 @@
+#data management
+library(dplyr)
+library(foreign)
+
+#importing the data files from my desktop
+agesex<- read.csv("~/Desktop/thesis/condensecsv/agesex.csv")
+educ<- read.csv("~/Desktop/thesis/condensecsv/educationattain.csv")
+unemp19<- read.csv("~/Desktop/thesis/condensecsv/unemployment2019.csv")
+unemp20<- read.csv("~/Desktop/thesis/condensecsv/unemployment2020.csv")
+foodcovid <- read.csv("~/Desktop/thesis/condensecsv/foodandcoviddata.csv")
+race <- read.csv("~/Desktop/thesis/condensecsv/race3.csv")
+final <- read.csv("~/Desktop/thesis/condensecsv/foodandcoviddata.csv")
+
+#ensuring that each FIPS column is in integer form so that data can be 
+#accurately merged
+agesex$FIPS <- as.integer(agesex$FIPS)
+educ$FIPS <- as.integer(educ$FIPS)
+unemp19$FIPS <- as.integer(unemp19$FIPS)
+unemp20$FIPS <- as.integer(unemp20$FIPS)
+race$FIPS <- as.integer(race$FIPS)
+foodcovid$FIPS <- as.integer(foodcovid$FIPS)
+
+#merging data, starting with foodandcovid data and adding on variables in order of import
+final1 <- left_join(final, agesex, by=c("FIPS"="FIPS"))
+final2 <-left_join(final1, educ, by=c("FIPS"="FIPS"))
+final3 <-left_join(final2, unemp19, by=c("FIPS"="FIPS"))
+final4 <-left_join(final3, unemp20, by=c("FIPS"="FIPS"))
+final5<- left_join(final4, race, by=c("FIPS"="FIPS"))
+
+
+#get rid of commas and turn the values into numerics for popualtion and covid cases
+madata$Total.Population<-as.numeric(gsub(",", "",madata$Total.Population))
+madata$COVID.case..2020..<-as.numeric(gsub(",", "",madata$COVID.case..2020..))
+mutate(madata, "infection"= COVID.case..2020../Total.Population)
+
+#rename variables so data analysis is clearer
+final5<- rename(final5, county= County.x)
+final5<- rename(final5, total.pop= Total.Population)
+final5<- rename(final5, food.insecurity.rate2019 =X2019.Food.Insecurity..)
+final5<- rename(final5, food.insecurity.num2019 = X2019.Food.Insecurity...1)
+final5<- rename(final5, food.insecurity.rate2021=X.Revised.Projections...March.2021..2021.Food.Insecurity...)
+final5<- rename(final5, food.insecurity.num2021=X.Revised.Projections...March.2021..2021.Food.Insecurity..)
+final5<- rename(final5, childpop=Total.Child.Population)
+final5<- rename(final5, child.food.insecurity.rate2019 =X2019.Child.Food.Insecurity...)
+final5<- rename(final5, child.food.insecurity.num2019=X2019.Child.Food.Insecurity..)
+final5<- rename(final5, child.food.insecurity.rate2021=X.Revised.Projections...March.2021..2021.Child.Food.Insecurity...)
+final5<- rename(final5, child.food.insecurity.num2021=X.Revised.Projections...March.2021..2021.Child.Food.Insecurity..)
+final5<- rename(final5, covidcases2020= COVID.case..2020..)
+final5<- rename(final5, coviddeath2020= Covid.death.2020...)
+final5<- rename(final5, male= Male..)
+final5<- rename(final5, female= Female..)
+final5<- rename(final5, under18= Total.under.18..)
+final5<- rename(final5, adult= Total.18.64..)
+final5<- rename(final5, senior= Total.65...)
+final5<- rename(final5, nohs= Less.than.high.school..)
+final5<- rename(final5, hs= high.school.graduate..)
+final5<- rename(final5, bachelors= bachelors.degree..)
+final5<- rename(final5, advdegree= Graduate.or.professional.degree..)
+final5<- rename(final5, unemp2019=Unemployment.Rate.2019.. )
+final5<- rename(final5, unemp2020=Unemployment.Rate.2020.. )
+final5<- rename(final5, white=White.Population..)
+final5<- rename(final5, black=Black.population..)
+final5<- rename(final5, native=Native.American..)
+final5<- rename(final5, asian=Asian..)
+final5<- rename(final5, islander=Hawaiin.Pacific.Islander..)
+final5<- rename(final5, other=Other..)
+
+
+#get rid of commas and turn the current character columns into numerics
+final5$total.pop<-as.numeric(gsub(",", "",final5$total.pop))
+final5$covidcases2020<-as.numeric(gsub(",", "",final5$covidcases2020))
+final5$coviddeath2020<-as.numeric(gsub(",", "",final5$coviddeath2020))
+final5$food.insecurity.num2019<-as.numeric(gsub(",", "",final5$food.insecurity.num2019))
+final5$food.insecurity.num2021<-as.numeric(gsub(",", "",final5$food.insecurity.num2021))
+final5$childpop<-as.numeric(gsub(",", "",final5$childpop))
+final5$child.food.insecurity.num2019<-as.numeric(gsub(",", "",final5$child.food.insecurity.num2019))
+final5$child.food.insecurity.num2021<-as.numeric(gsub(",", "",final5$child.food.insecurity.num2021))
+final5$nohs<-as.numeric(gsub(",", "",final5$nohs))
+final5$hs<-as.numeric(gsub(",", "",final5$hs))
+final5$bachelors<-as.numeric(gsub(",", "",final5$bachelors))
+final5$advdegree<-as.numeric(gsub(",", "",final5$advdegree))
+final5$unemp2019<-as.numeric(gsub(",", "",final5$unemp2019))
+final5$unemp2020<-as.numeric(gsub(",", "",final5$unemp2020))
+
+#create new variables that I want to have to analyze data
+#first variable is infection whihc is cases out of population
+  final5<-mutate(final5, infection= covidcases2020/total.pop)
+#next is mortality, the death per population
+final5<-mutate(final5, mortality= coviddeath2020/total.pop)
+#severity is the deaths per the case numbers
+final5<-mutate(final5, severity= coviddeath2020/covidcases2020)
+#child rate is percent of child pop comapred to all population
+final5<- mutate(final5, childrate= childpop/total.pop)
+
