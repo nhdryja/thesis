@@ -1,0 +1,24 @@
+# bivariate analysis begins
+#objective one pearson coefficients for rates 
+bi1<-cor(final5$food.insecurity.rate2019, final5$infection, use="complete.obs", method=c("pearson"))
+bi11<-cor(final5$child.food.insecurity.rate2019, final5$infection, use="complete.obs", method=c("pearson"))
+bi12<-cor(final5$food.insecurity.rate2019, final5$mortality, use="complete.obs", method=c("pearson"))
+bi13<-cor(final5$child.food.insecurity.rate2019, final5$mortality, use="complete.obs", method=c("pearson"))
+
+#i decided that i didnt want to use rates, only numbers so redo on bivariate for objective 1
+bi21<-cor(final5$food.insecurity.num2019, final5$covidcases2020, use="complete.obs", method=c("pearson"))
+bi22<-cor(final5$child.food.insecurity.num2019, final5$covidcases2020, use="complete.obs", method=c("pearson"))
+bi23<-cor(final5$food.insecurity.num2019, final5$coviddeath2020, use="complete.obs", method=c("pearson"))
+bi24<-cor(final5$child.food.insecurity.num2019, final5$coviddeath2020, use="complete.obs", method=c("pearson"))
+
+#objective 2
+bi31<-cor(final5$covidcases2020, final5$adultchange, use="complete.obs", method=c("pearson"))
+bi32<-cor(final5$coviddeath2020, final5$adultchange, use="complete.obs", method=c("pearson"))
+
+#objective3
+#i am not sure if I can do this becuae most demogrpahic variables are rates
+
+
+
+
+
