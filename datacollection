@@ -1,3 +1,4 @@
+
 #data management
 library(dplyr)
 library(foreign)
@@ -11,7 +12,7 @@ foodcovid <- read.csv("~/Desktop/thesis/condensecsv/foodandcoviddata.csv")
 race <- read.csv("~/Desktop/thesis/condensecsv/race3.csv")
 final <- read.csv("~/Desktop/thesis/condensecsv/foodandcoviddata.csv")
 
-#ensuring that each FIPS column is in integer form so that data can be 
+#ensuring that each FIPS column is in itneger form so that data can be 
 #accurately merged
 agesex$FIPS <- as.integer(agesex$FIPS)
 educ$FIPS <- as.integer(educ$FIPS)
@@ -28,6 +29,16 @@ final4 <-left_join(final3, unemp20, by=c("FIPS"="FIPS"))
 final5<- left_join(final4, race, by=c("FIPS"="FIPS"))
 
 
+names(final2)
+#mutate to change name of variables
+#create list of variables that I have generated, keep the nas, list of variables in word doc
+#highlight variables needed, create dataset with only those, do not eliminate FIPS and county
+
+
+#creating a massachusetts sub data set
+madata <- filter(final5, State=="MA")
+
+#practice creatng new variable with the MA data set 
 #get rid of commas and turn the values into numerics for popualtion and covid cases
 madata$Total.Population<-as.numeric(gsub(",", "",madata$Total.Population))
 madata$COVID.case..2020..<-as.numeric(gsub(",", "",madata$COVID.case..2020..))
@@ -65,7 +76,7 @@ final5<- rename(final5, asian=Asian..)
 final5<- rename(final5, islander=Hawaiin.Pacific.Islander..)
 final5<- rename(final5, other=Other..)
 
-
+#create new variables in the final5 data set
 #get rid of commas and turn the current character columns into numerics
 final5$total.pop<-as.numeric(gsub(",", "",final5$total.pop))
 final5$covidcases2020<-as.numeric(gsub(",", "",final5$covidcases2020))
@@ -77,13 +88,14 @@ final5$child.food.insecurity.num2019<-as.numeric(gsub(",", "",final5$child.food.
 final5$child.food.insecurity.num2021<-as.numeric(gsub(",", "",final5$child.food.insecurity.num2021))
 final5$nohs<-as.numeric(gsub(",", "",final5$nohs))
 final5$hs<-as.numeric(gsub(",", "",final5$hs))
+final5$some.college.or.associates.degree..<-as.numeric(gsub(",", "",final5$some.college.or.associates.degree..))
 final5$bachelors<-as.numeric(gsub(",", "",final5$bachelors))
 final5$advdegree<-as.numeric(gsub(",", "",final5$advdegree))
 final5$unemp2019<-as.numeric(gsub(",", "",final5$unemp2019))
 final5$unemp2020<-as.numeric(gsub(",", "",final5$unemp2020))
 
 #create new variables that I want to have to analyze data
-#first variable is infection whihc is cases out of population
+#first variable is infection which is cases out of population
   final5<-mutate(final5, infection= covidcases2020/total.pop)
 #next is mortality, the death per population
 final5<-mutate(final5, mortality= coviddeath2020/total.pop)
@@ -91,4 +103,13 @@ final5<-mutate(final5, mortality= coviddeath2020/total.pop)
 final5<-mutate(final5, severity= coviddeath2020/covidcases2020)
 #child rate is percent of child pop comapred to all population
 final5<- mutate(final5, childrate= childpop/total.pop)
-
+#change in food insecurity levels for adults 2019 to 2021
+final5<-mutate(final5, adultchange=(food.insecurity.num2021-food.insecurity.num2019))
+#change in food insecurity levels for kids 2019 to 2021
+final5<-mutate(final5, childchange=(child.food.insecurity.num2021-child.food.insecurity.num2019))
+#change in unemployment 2019 to 2020
+final5<-mutate(final5, empchange=(unemp2020-unemp2019))
+#for education want to have category of those with college
+final5<- mutate(final5, college=some.college.or.associates.degree..+bachelors+advdegree)
+#want to separate race into white and BIPOC, so create a bipoc variable
+final5<- mutate(final5, bipoc=black+asian+native+islander+other)
