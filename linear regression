@@ -1,0 +1,45 @@
+
+#regression for objective 1
+#covid cases as dependnet and food insecurity in 2019 as independent with the demogrpahic factors
+lm11=lm(covidcases2020~food.insecurity.num2019+female+
+         under18+adult+senior+nohs+hs+college+
+         unemp2019+bipoc+total.pop, data= final5)
+
+#covid deaths as dependent with food insecurity in 2019 as independent
+lm12=lm(coviddeath2020~food.insecurity.num2019+female+
+         under18+adult+senior+nohs+hs+college+
+         unemp2019+bipoc+total.pop, data= final5)
+
+#covid cases as dependent with food insecurity for children in 2019 as ind
+lm13=lm(covidcases2020~child.food.insecurity.num2019+female+
+         under18+adult+senior+nohs+hs+college+
+         unemp2019+bipoc+total.pop, data= final5)
+
+#covid deaths as dependent with child food insecurity in 2019 as independent
+lm14=lm(coviddeath2020~child.food.insecurity.num2019+female+
+         under18+adult+senior+nohs+hs+college+
+         unemp2019+bipoc+total.pop, data= final5)
+
+#regressions for objective 2
+#change in food insecurity as dependent with covid deaths as independnt
+lm21= lm(adultchange~coviddeath2020+female+
+           under18+adult+senior+nohs+hs+college+
+           unemp2019+bipoc+total.pop, data= final5)
+#change in food insecurity as dependent with covid cases as independnt
+lm22= lm(adultchange~covidcases2020+female+
+           under18+adult+senior+nohs+hs+college+
+           unemp2019+bipoc+total.pop, data= final5)
+#change in child food insecurity as dependent with covid cases as independnt
+lm23= lm(childchange~covidcases2020+female+
+           under18+adult+senior+nohs+hs+college+
+           unemp2019+bipoc+total.pop, data= final5)
+#change in child food insecurity as dependent with covid deaths as independnt
+lm24= lm(adultchange~coviddeath2020+female+
+           under18+adult+senior+nohs+hs+college+
+           unemp2019+bipoc+total.pop, data= final5)
+
+#regressions for objective 3
+#covid cases as dependent, gender as indp
+lm31= lm(covidcases2020~female+
+           under18+adult+senior+nohs+hs+college+
+           unemp2019+bipoc+total.pop, data= final5)
