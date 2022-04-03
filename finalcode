@@ -1,0 +1,443 @@
+#data management
+library(dplyr)
+library(foreign)
+
+#Importing the data files from my desktop
+agesex<- read.csv("~/Desktop/thesis/condensecsv/agesex.csv")
+educ<- read.csv("~/Desktop/thesis/condensecsv/educationattain.csv")
+unemp19<- read.csv("~/Desktop/thesis/condensecsv/unemployment2019.csv")
+unemp20<- read.csv("~/Desktop/thesis/condensecsv/unemployment2020.csv")
+foodcovid <- read.csv("~/Desktop/thesis/condensecsv/foodandcoviddata.csv")
+race <- read.csv("~/Desktop/thesis/condensecsv/race3.csv")
+final <- read.csv("~/Desktop/thesis/condensecsv/foodandcoviddata.csv")
+
+#ensuring that each FIPS column is in integer form so that data can be 
+#accurately merged
+agesex$FIPS <- as.integer(agesex$FIPS)
+educ$FIPS <- as.integer(educ$FIPS)
+unemp19$FIPS <- as.integer(unemp19$FIPS)
+unemp20$FIPS <- as.integer(unemp20$FIPS)
+race$FIPS <- as.integer(race$FIPS)
+foodcovid$FIPS <- as.integer(foodcovid$FIPS)
+
+#merging data, starting with food and covid data and adding on variables in order of import
+final1 <- left_join(final, agesex, by=c("FIPS"="FIPS"))
+final2 <-left_join(final1, educ, by=c("FIPS"="FIPS"))
+final3 <-left_join(final2, unemp19, by=c("FIPS"="FIPS"))
+final4 <-left_join(final3, unemp20, by=c("FIPS"="FIPS"))
+final5<- left_join(final4, race, by=c("FIPS"="FIPS"))
+
+#get rid of commas and turn the values into numeric for population and Covid-19 cases
+madata$Total.Population<-as.numeric(gsub(",", "",madata$Total.Population))
+madata$COVID.case..2020..<-as.numeric(gsub(",", "",madata$COVID.case..2020..))
+mutate(madata, "infection"= COVID.case..2020../Total.Population)
+
+#rename variables so data analysis is clearer
+final5<- rename(final5, county= County.x)
+final5<- rename(final5, total.pop= Total.Population)
+final5<- rename(final5, food.insecurity.rate2019 =X2019.Food.Insecurity..)
+final5<- rename(final5, food.insecurity.num2019 = X2019.Food.Insecurity...1)
+final5<- rename(final5, food.insecurity.rate2021=X.Revised.Projections...March.2021..2021.Food.Insecurity...)
+final5<- rename(final5, food.insecurity.num2021=X.Revised.Projections...March.2021..2021.Food.Insecurity..)
+final5<- rename(final5, childpop=Total.Child.Population)
+final5<- rename(final5, child.food.insecurity.rate2019 =X2019.Child.Food.Insecurity...)
+final5<- rename(final5, child.food.insecurity.num2019=X2019.Child.Food.Insecurity..)
+final5<- rename(final5, child.food.insecurity.rate2021=X.Revised.Projections...March.2021..2021.Child.Food.Insecurity...)
+final5<- rename(final5, child.food.insecurity.num2021=X.Revised.Projections...March.2021..2021.Child.Food.Insecurity..)
+final5<- rename(final5, covidcases2020= COVID.case..2020..)
+final5<- rename(final5, coviddeath2020= Covid.death.2020...)
+final5<- rename(final5, male= Male..)
+final5<- rename(final5, female= Female..)
+final5<- rename(final5, under18= Total.under.18..)
+final5<- rename(final5, adult= Total.18.64..)
+final5<- rename(final5, senior= Total.65...)
+final5<- rename(final5, nohs= Less.than.high.school..)
+final5<- rename(final5, hs= high.school.graduate..)
+final5<- rename(final5, bachelors= bachelors.degree..)
+final5<- rename(final5, advdegree= Graduate.or.professional.degree..)
+final5<- rename(final5, unemp2019=Unemployment.Rate.2019.. )
+final5<- rename(final5, unemp2020=Unemployment.Rate.2020.. )
+final5<- rename(final5, white=White.Population..)
+final5<- rename(final5, black=Black.population..)
+final5<- rename(final5, native=Native.American..)
+final5<- rename(final5, asian=Asian..)
+final5<- rename(final5, islander=Hawaiin.Pacific.Islander..)
+final5<- rename(final5, other=Other..)
+
+#create new variables in the final5 data set
+#get rid of commas and turn the current character columns into numerics
+final5$total.pop<-as.numeric(gsub(",", "",final5$total.pop))
+final5$covidcases2020<-as.numeric(gsub(",", "",final5$covidcases2020))
+final5$coviddeath2020<-as.numeric(gsub(",", "",final5$coviddeath2020))
+final5$food.insecurity.num2019<-as.numeric(gsub(",", "",final5$food.insecurity.num2019))
+final5$food.insecurity.num2021<-as.numeric(gsub(",", "",final5$food.insecurity.num2021))
+final5$childpop<-as.numeric(gsub(",", "",final5$childpop))
+final5$child.food.insecurity.num2019<-as.numeric(gsub(",", "",final5$child.food.insecurity.num2019))
+final5$child.food.insecurity.num2021<-as.numeric(gsub(",", "",final5$child.food.insecurity.num2021))
+final5$nohs<-as.numeric(gsub(",", "",final5$nohs))
+final5$hs<-as.numeric(gsub(",", "",final5$hs))
+final5$some.college.or.associates.degree..<-as.numeric(gsub(",", "",final5$some.college.or.associates.degree..))
+final5$bachelors<-as.numeric(gsub(",", "",final5$bachelors))
+final5$advdegree<-as.numeric(gsub(",", "",final5$advdegree))
+final5$unemp2019<-as.numeric(gsub(",", "",final5$unemp2019))
+final5$unemp2020<-as.numeric(gsub(",", "",final5$unemp2020))
+
+#create new variables that I want to have to analyze data and see if there are relationships worth investigating
+#first variable is infection which is cases out of population
+  final5<-mutate(final5, infection= covidcases2020/total.pop)
+#next is mortality, the death per population
+final5<-mutate(final5, mortality= coviddeath2020/total.pop)
+#severity is the deaths per the case numbers
+final5<-mutate(final5, severity= coviddeath2020/covidcases2020)
+#child rate is percent of child pop comapred to all population
+final5<- mutate(final5, childrate= childpop/total.pop)
+#change in food insecurity levels for adults 2019 to 2021
+final5<-mutate(final5, adultchange=(food.insecurity.num2021-food.insecurity.num2019))
+#change in food insecurity levels for kids 2019 to 2021
+final5<-mutate(final5, childchange=(child.food.insecurity.num2021-child.food.insecurity.num2019))
+#change in unemployment 2019 to 2020
+final5<-mutate(final5, empchange=(unemp2020-unemp2019))
+#for education want to have category of those with college
+final5<- mutate(final5, college=some.college.or.associates.degree..+bachelors+advdegree)
+#want to separate race into white and BIPOC, so create a bipoc variable
+final5<- mutate(final5, bipoc=black+asian+native+islander+other)
+
+#want to turn my rates into new variables that are numbers
+final5<-mutate(final5, nfemale=female*total.pop)
+final5<-mutate(final5, nunder18=under18*total.pop)
+final5<-mutate(final5, nadult=adult*total.pop)
+final5<-mutate(final5, nsenior=senior*total.pop)
+final5<-mutate(final5, nnohs=nohs*total.pop)
+final5<-mutate(final5, nhs=hs*total.pop)
+final5<-mutate(final5, ncollege=college*total.pop)
+final5<-mutate(final5, nunemp2019=unemp2019*total.pop)
+final5<-mutate(final5, nbipoc=bipoc*total.pop)
+
+
+#Unviariate analysis basic data metrics for population
+#calculating means for the different variables
+popmean <- mean(final5$total.pop)
+foodinsecmean2019<- mean(final5$food.insecurity.rate2019)
+foodinsecmean2021<- mean(final5$food.insecurity.rate2021)
+childpopmean <- mean(final5$childpop)
+childfoodinsecmean2019<- mean(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecmean2021<- mean(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+casemean <- mean(final5$covidcases2020, na.rm=TRUE)
+deathmean <- mean(final5$coviddeath2020, na.rm=TRUE)
+malemean<- mean(final5$male, na.rm=TRUE)
+femalemean<- mean(final5$female, na.rm=TRUE)
+under18mean <- mean(final5$under18, na.rm=TRUE)
+adultmean <- mean(final5$adult, na.rm=TRUE)
+seniormean <- mean(final5$senior, na.rm=TRUE)
+nohsmean<- mean(final5$nohs, na.rm=TRUE)
+hsmean<- mean(final5$hs, na.rm=TRUE)
+bachelorsmean<- mean(final5$bachelors, na.rm=TRUE)
+advmean<- mean(final5$advdegree, na.rm=TRUE)
+unem2019mean<- mean(final5$unemp2019, na.rm=TRUE)
+unem2020mean<- mean(final5$unemp2020, na.rm=TRUE)
+infectionmean <-mean(final5$infection, na.rm=TRUE)
+mortalitymean <-mean(final5$mortality, na.rm=TRUE)
+severitymean <-mean(final5$severity, na.rm=TRUE)
+adultchangemean<-mean(final5$adultchange, na.rm=TRUE)
+childchangemean<-mean(final5$childchange, na.rm=TRUE)
+empchangemean<-mean(final5$empchange, na.rm=TRUE)
+hscollegemean<-mean(final5$hscollege, na.rm=TRUE)
+bipocmean<-mean(final5$bipoc, na.rm=TRUE)
+
+#calculating standard deviations for the different variables
+popsd <- sd(final5$total.pop)
+foodinsecsd2019<- sd(final5$food.insecurity.rate2019)
+foodinsecsd2021<- sd(final5$food.insecurity.rate2021)
+childpopsd<- sd(final5$childpop)
+childfoodinsecsd2019<- sd(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecsd2021<- sd(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+casesd <- sd(final5$covidcases2020, na.rm=TRUE)
+deathsd <- sd(final5$coviddeath2020, na.rm=TRUE)
+malesd<- sd(final5$male, na.rm=TRUE)
+femalesd<- sd(final5$female, na.rm=TRUE)
+under18sd <- sd(final5$under18, na.rm=TRUE)
+adultsd <- sd(final5$adult, na.rm=TRUE)
+seniorsd <- sd(final5$senior, na.rm=TRUE)
+nohssd<- sd(final5$nohs, na.rm=TRUE)
+hssd<-sd(final5$hs, na.rm=TRUE)
+bachelorssd<- sd(final5$bachelors, na.rm=TRUE)
+advsd<- sd(final5$advdegree, na.rm=TRUE)
+unem2019sd<- sd(final5$unemp2019, na.rm=TRUE)
+unem2020sd<- sd(final5$unemp2020, na.rm=TRUE)
+infectionsd <-sd(final5$infection, na.rm=TRUE)
+mortalitysd <-sd(final5$mortality, na.rm=TRUE)
+severitysd <-sd(final5$severity, na.rm=TRUE)
+adultchangesd<-sd(final5$adultchange, na.rm=TRUE)
+childchangesd<-sd(final5$childchange, na.rm=TRUE)
+empchangesd<-sd(final5$empchange, na.rm=TRUE)
+
+#calculating medians
+popmedian <- median(final5$total.pop)
+foodinsecmedian2019<- median(final5$food.insecurity.rate2019)
+foodinsecmedian2021<- median(final5$food.insecurity.rate2021)
+childpopmedian <- median(final5$childpop)
+childfoodinsecmedian2019<- median(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecmedian2021<- median(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+casemedian <- median(final5$covidcases2020, na.rm=TRUE)
+deathmedian <- median(final5$coviddeath2020, na.rm=TRUE)
+malemedian<- median(final5$male, na.rm=TRUE)
+femalemedian<- median(final5$female, na.rm=TRUE)
+under18median <- median(final5$under18, na.rm=TRUE)
+adultmedian <- median(final5$adult, na.rm=TRUE)
+seniormedian<- median(final5$senior, na.rm=TRUE)
+nohsmedian<- median(final5$nohs, na.rm=TRUE)
+hsmedian<- median(final5$hs, na.rm=TRUE)
+bachelorsmedian<- median(final5$bachelors, na.rm=TRUE)
+advmedian<- median(final5$advdegree, na.rm=TRUE)
+unem2019median<- median(final5$unemp2019, na.rm=TRUE)
+unem2020median<- median(final5$unemp2020, na.rm=TRUE)
+infectionmedian <-median(final5$infection, na.rm=TRUE)
+mortalitymedian <-median(final5$mortality, na.rm=TRUE)
+severitymedian <-median(final5$severity, na.rm=TRUE)
+adultchangemedian<-median(final5$adultchange, na.rm=TRUE)
+childchangemedian<-median(final5$childchange, na.rm=TRUE)
+empchangemedian<-median(final5$empchange, na.rm=TRUE)
+
+#calculate the inter-qurtile ranges
+popiqr <- IQR(final5$total.pop)
+foodinsecIQR2019<- IQR(final5$food.insecurity.rate2019)
+foodinsecIQR2021<- IQR(final5$food.insecurity.rate2021)
+childpopIQR <- IQR(final5$childpop)
+childpoprateIQR <- IQR(final5$childrate)
+childfoodinsecIQR2019<- IQR(final5$child.food.insecurity.rate2019, na.rm=TRUE)
+childfoodinsecIQR2021<- IQR(final5$child.food.insecurity.rate2021, na.rm=TRUE)
+caseIQR <- IQR(final5$covidcases2020, na.rm=TRUE)
+deathIQR <- IQR(final5$coviddeath2020, na.rm=TRUE)
+maleIQR<- IQR(final5$male, na.rm=TRUE)
+femaleIQR<- IQR(final5$female, na.rm=TRUE)
+under18IQR <- IQR(final5$under18, na.rm=TRUE)
+adultIQR <- IQR(final5$adult, na.rm=TRUE)
+seniorIQR <- IQR(final5$senior, na.rm=TRUE)
+nohsIQR<- IQR(final5$nohs, na.rm=TRUE)
+hsIQR<- IQR(final5$hs, na.rm=TRUE)
+bachelorsIQR<- IQR(final5$bachelors, na.rm=TRUE)
+advIQR<- IQR(final5$advdegree, na.rm=TRUE)
+unem2019IQR<- IQR(final5$unemp2019, na.rm=TRUE)
+unem2020IQR<- IQR(final5$unemp2020, na.rm=TRUE)
+infectionIQR <-IQR(final5$infection, na.rm=TRUE)
+mortalityIQR <-IQR(final5$mortality, na.rm=TRUE)
+severityIQR <-IQR(final5$severity, na.rm=TRUE)
+adultchangeIQR<-IQR(final5$adultchange, na.rm=TRUE)
+childchangeIQR<-IQR(final5$childchange, na.rm=TRUE)
+empchangeIQR<-IQR(final5$empchange, na.rm=TRUE)
+
+
+#create a table with the univariate characteristics for demographic variables 
+demographicuni<- matrix(c(popmean, childpopmean, malemean,femalemean,
+        under18mean , adultmean , seniormean ,nohsmean,hsmean, bachelorsmean, advmean,
+        unem2019mean,unem2020mean,empchangemean,
+        popsd,childpopsd, malesd,femalesd,under18sd,adultsd, 
+        seniorsd,nohssd, hssd, bachelorssd, advsd,unem2019sd,unem2020sd,empchangesd,
+        popmedian,  childpopmedian, malemedian, femalemedian,
+        under18median,adultmedian,seniormedian,nohsmedian,
+        hsmedian,bachelorsmedian, advmedian, unem2019median, unem2020median, empchangemedian,
+        popiqr,childpopIQR, maleIQR,femaleIQR,under18IQR,adultIQR, 
+        seniorIQR,nohsIQR, hsIQR, bachelorsIQR, advIQR,unem2019IQR,unem2020IQR,empchangeIQR),
+        ncol= 14, byrow= TRUE)
+colnames(demographicuni) <- c('Population','Under 18 Population','Male Percent', 
+        'Female Percent ', 'Under 18 Percent', '18-64 Percent', '65+ Percent', 
+        'Did not graduate high school', 'High School graduate', 'Bachelors degree', 'Advanced degree',
+        '2019 unemployment rate', '2020 unemployment rate', 'Change in unemployment')
+rownames(demographicuni) <- c('Mean','StandardDeviation', 'Median','IQR')
+demographicuni <- as.table(demographicuni)
+
+
+write.table(demographicuni, file = "demographicuni.txt", sep = ",", quote = FALSE, row.names=T )
+
+
+#creating univariate table for covid and food insecurity variables
+foodcoviduni<- matrix(c(foodinsecmean2019,foodinsecmean2021,childfoodinsecmean2019, childfoodinsecmean2021, 
+                         casemean,deathmean, infectionmean, mortalitymean, severitymean, adultchangemean, 
+                        childchangemean,
+                        foodinsecsd2019, foodinsecsd2021, childfoodinsecsd2019, childfoodinsecsd2021,
+                        casesd, deathsd, infectionsd, mortalitysd, severitysd, adultchangesd, childchangesd,
+                         foodinsecmedian2019, foodinsecmedian2021, childfoodinsecmedian2019, childfoodinsecmedian2021,
+                        casemedian, deathmedian, infectionmedian, mortalitymedian, severitymedian, adultchangemedian,
+                        childchangemedian,
+                        foodinsecIQR2019, foodinsecIQR2021, childfoodinsecIQR2019, childfoodinsecIQR2021,
+                        caseIQR, deathIQR, infectionIQR, mortalityIQR, severityIQR, adultchangeIQR, childchangeIQR),
+                        ncol= 11, byrow= TRUE)
+colnames(foodcoviduni) <- c('Food insecurity 2019','Food insecurity 2021','Child food insecurity 2019', 
+                              'Child food insecurity 2021 ', 'Covid-19 cases', 'Covid-19 deaths', 
+                              'Covid-19 infection rate', 'Covid-19 mortality rate', 
+                              'Covid-19 severity rate', 'Adult % change in food insecurity',
+                            'Child % change in food insecurity')
+rownames(foodcoviduni) <- c('Mean','Standard Deviation', 'Median','IQR')
+foodcoviduni <- as.table(foodcoviduni)
+
+
+write.table(foodcoviduni, file = "foodcoviduni.txt", sep = ",", quote = FALSE, row.names=T )
+
+
+#for dividing the unviariate into objectives, objective one
+printfoodinsecmean2019
+
+
+# bivariate analysis begins
+#objective 1
+bi21<-cor.test(final5$food.insecurity.num2019, final5$covidcases2020, use="complete.obs", method=c("pearson"))
+bi22<-cor.test(final5$child.food.insecurity.num2019, final5$covidcases2020, use="complete.obs", method=c("pearson"))
+bi23<-cor.test(final5$food.insecurity.num2019, final5$coviddeath2020, use="complete.obs", method=c("pearson"))
+bi24<-cor.test(final5$child.food.insecurity.num2019, final5$coviddeath2020, use="complete.obs", method=c("pearson"))
+
+#objective 2
+bi31<-cor.test(final5$covidcases2020, final5$adultchange, use="complete.obs", method=c("pearson"))
+bi32<-cor.test(final5$coviddeath2020, final5$adultchange, use="complete.obs", method=c("pearson"))
+bi33<-cor.test(final5$coviddeath2020, final5$childchange, use="complete.obs", method=c("pearson"))
+bi34<-cor.test(final5$covidcases2020, final5$childchange, use="complete.obs", method=c("pearson"))
+
+#objective3
+bi41<- cor.test(final5$covidcases2020, final5$female, use="complete.obs", method=c("pearson"))
+bi42<-cor.test(final5$coviddeath2020, final5$female, use="complete.obs", method=c("pearson"))
+bi43<-cor.test(final5$covidcases2020, final5$hscollege, use="complete.obs", method=c("pearson"))
+bi44<-cor.test(final5$coviddeath2020, final5$hscollege, use="complete.obs", method=c("pearson"))
+bi45<-cor.test(final5$covidcases2020, final5$under18, use="complete.obs", method=c("pearson"))
+bi46<-cor.test(final5$coviddeath2020, final5$under18, use="complete.obs", method=c("pearson"))
+bi47<-cor.test(final5$covidcases2020, final5$senior, use="complete.obs", method=c("pearson"))
+bi48<-cor.test(final5$coviddeath2020, final5$senior, use="complete.obs", method=c("pearson"))
+bi49<-cor.test(final5$covidcases2020, final5$unemp2019, use="complete.obs", method=c("pearson"))
+bi50<-cor.test(final5$coviddeath2020, final5$unemp2019, use="complete.obs", method=c("pearson"))
+bi51<-cor.test(final5$covidcases2020, final5$unemp2020, use="complete.obs", method=c("pearson"))
+bi52<-cor.test(final5$coviddeath2020, final5$unemp2020, use="complete.obs", method=c("pearson"))
+bi53<-cor.test(final5$covidcases2020, final5$bipoc, use="complete.obs", method=c("pearson"))
+bi54<-cor.test(final5$coviddeath2020, final5$bipoc, use="complete.obs", method=c("pearson"))
+bi55<-cor.test(final5$covidcases2020, final5$total.pop, use="complete.obs", method=c("pearson"))
+bi56<-cor.test(final5$coviddeath2020, final5$total.pop, use="complete.obs", method=c("pearson"))
+
+
+#want to duplicate my data table so that I can create a new data table with out the nas
+library(data.table)
+df.1 <- copy(final5)
+df.2<-na.omit(df.1)
+
+#make variable to combine hs and college grads for education 
+final5<- mutate(final5, hscollege=hs+college)
+
+#regression for objective 1
+#covid cases as dependent and food insecurity in 2019 as independent with the demographic factors
+
+lm11=lm(covidcases2020~food.insecurity.num2019+female+
+         under18+senior+hscollege+
+         unemp2019+bipoc+total.pop, data= final5)
+summary(lm11)
+
+#covid deaths as dependent with food insecurity in 2019 as independent
+lm12=lm(coviddeath2020~food.insecurity.num2019+female+
+         under18+senior+hscollege+
+         unemp2019+bipoc+total.pop+covidcases2020, data= final5)
+summary(lm12)
+
+lm12a=lm(coviddeath2020~food.insecurity.num2019+
+          unemp2019+bipoc+total.pop, data= final5)
+summary(lm12a)
+#covid cases as dependent with food insecurity for children in 2019 as independent
+lm13=lm(covidcases2020~child.food.insecurity.num2019+female+
+         under18+senior+hscollege+
+         unemp2019+bipoc+total.pop+childpop, data= final5)
+summary(lm13)
+
+#covid deaths as dependent with child food insecurity in 2019 as independent
+lm14=lm(coviddeath2020~child.food.insecurity.num2019+covidcases2020+female+
+         under18+senior+hscollege+
+         unemp2019+bipoc+total.pop, data= final5)
+summary(lm14)
+
+#regressions for objective 2
+#change in food insecurity as dependent with covid deaths as independent
+lm21= lm(adultchange~coviddeath2020+female+
+           under18+senior+hscollege+
+           unemp2019+bipoc+total.pop+food.insecurity.num2019+empchange+covidcases2020, data= final5)
+summary(lm21)
+
+lm21a= lm(adultchange~coviddeath2020+female+
+           under18+senior+hscollege+
+           unemp2019+bipoc+total.pop+food.insecurity.num2019+empchange, data= final5)
+summary(lm21a)
+
+#change in food insecurity as dependent with covid cases as independent
+lm22= lm(adultchange~covidcases2020+female+ under18+
+         senior+hscollege+
+           unemp2019+empchange+ food.insecurity.num2019+ bipoc+total.pop, data= final5)
+  summary(lm22)
+
+
+#change in child food insecurity as dependent with covid deaths as independent
+lm23= lm(childchange~coviddeath2020+female+
+           under18+senior+hscollege+
+           unemp2019+empchange+child.food.insecurity.num2019+bipoc+total.pop, data= final5)
+summary(lm23)
+
+#change in child food insecurity as dependent with covid cases as independent
+lm24= lm(childchange~covidcases2020+female+
+           under18+senior+hscollege+
+           unemp2019+empchange+child.food.insecurity.num2019+bipoc+total.pop, data= final5)
+summary(lm24)
+
+#regressions for objective 3
+#covid cases as dependent
+lm31= lm(covidcases2020~
+           under18+ female+ senior+hscollege+
+           unemp2019+bipoc+unemp2020+total.pop, data= final5)
+summary(lm31)
+
+lm32= lm(coviddeath2020~female+
+           under18+senior+hscollege+
+           unemp2019+bipoc+unemp2020+total.pop+covidcases2020, data= final5)
+summary(lm32)
+
+#making charts 
+# charts for objective 1
+plot(final5$food.insecurity.num2019, final5$coviddeath2020, col="blue",xlim=c(0,50000), ylim=c(0,700), lwd=1, xlab="Food insecurity 2019", ylab="Covid-19 deaths 2020", 
+     main="Covid-19 deaths in 2020 as a function of food insecurity in 2019 ")
+abline(lm(final5$coviddeath2020~final5$food.insecurity.num2019), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
+
+plot(final5$food.insecurity.num2019, final5$covidcases2020, col="blue",xlim=c(0,15000), ylim=c(0,15000), lwd=1, xlab="Food insecurity 2019", ylab="Covid-19 cases in 2020", 
+     main="Covid-19 cases in 2020 as a function of food insecurity in 2019 ")
+abline(lm(final5$covidcases2020~final5$food.insecurity.num2019), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
+
+plot(final5$child.food.insecurity.num2019, final5$covidcases2020, col="blue",xlim=c(0,18000), ylim=c(0,25000), lwd=1, xlab="Youth food insecurity 2019", ylab="Covid-19 cases 2020", 
+     main="Covid-19 cases in 2020 as a function of youth food insecurity in 2019 ")
+abline(lm(final5$covidcases2020~final5$child.food.insecurity.num2019), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
+
+plot(final5$child.food.insecurity.num2019, final5$coviddeath2020,col="blue",xlim=c(0,18000), ylim=c(0,1700), lwd=1, xlab="Youth food insecurity 2019", ylab="Covid-19 deaths in 2020", 
+     main="Covid-19 cases in 2020 as a function of youth food insecurity in 2019 ")
+abline(lm(final5$coviddeath2020~final5$child.food.insecurity.num2019), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
+
+#charts for objective 2
+
+plot(final5$coviddeath2020, final5$adultchange, col="blue",xlim=c(0,3000), ylim=c(0,50000), lwd=1, xlab="Covid-19 deaths in 2020", ylab="Change in total food insecurity from 2019 to 2021", 
+     main="Change in food insecurity as a function of Covid-19 deaths in 2020")
+abline(lm(final5$adultchange~final5$coviddeath2020), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
+
+plot(final5$covidcases2020, final5$adultchange, col="blue",xlim=c(0,100000), ylim=c(0,45000), lwd=1, xlab="Covid-19 cases in 2020", ylab="Change in total food insecurity from 2019 to 2021", 
+     main="Change in food insecurity as a function of Covid-19 cases in 2020")
+abline(lm(final5$adultchange~final5$covidcases2020), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
+
+plot(final5$coviddeath2020, final5$childchange, col="blue",xlim=c(0,6000), ylim=c(0,45000), lwd=1, xlab="Covid-19 deaths in 2020", ylab="Change in youth food insecurity from 2019 to 2021", 
+     main="Change in youth food insecurity as a function of Covid-19 deaths in 2020")
+abline(lm(final5$childchange~final5$coviddeath2020), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
+
+plot(final5$covidcases2020, final5$adultchange, col="blue",xlim=c(0,125000), ylim=c(0,50000), lwd=1, xlab="Covid-19 cases in 2020", ylab="Change in youth food insecurity from 2019 to 2021", 
+     main="Change in youth food insecurity as a function of Covid-19 cases in 2020")
+abline(lm(final5$childchange~final5$covidcases2020), col="red")
+legend("topleft", legend=c("Regression line"),
+       col=c("red"), lty=1:2, cex=0.8)
